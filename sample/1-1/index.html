@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport">
+  <!-- closure! -->
+  <!-- const  -->
+  <title>JS Bin</title>
+</head>
+<body>
+  <ul>
+    <li>javascript</li>
+    <li>java</li>
+    <li>python</li>
+    <li>django</li>
+  </ul>
+</body>
+
+<script>
+    var list = document.querySelectorAll("li");
+    for(var i = 0; i < list.length; i++){
+
+        // callback function : callback 밖에 있는 i값의 참조를 유지하면서 share하고 있음
+        // closure 상황 
+        list[i].addEventListener('click', function() {
+            // console.log(i + "번째 리스트 입니다./");
+        })
+    }
+
+    for(let i = 0; i < list.length; i++){
+
+    // let을 사용하면 위의 문제 해결됨 ==> 지역변수화 시킴 (블록 스코프)
+    list[i].addEventListener('click', function() {
+        // console.log(i + "번째 리스트 입니다./");
+    })
+}
+
+
+// const 
+function home() {
+    var homename = 'my house'
+    homename = 'your house'
+    console.log(homename);
+}
+// home()
+
+// 값이 변경되면 안되는 값을 선언할 때 
+// 이전에는 HOME_NAME과 같이 코드 컨벤션으로 약속했음
+// 지금은 const 변수를 사용하면 됨
+// type과 상관없이 재할당할 때 에러가 나옴
+// const를 기본으로 사용한다.
+// 그런데 변경이 될 수 있는 변수는 let을 사용한다
+// var는 사용하지 않는다
+function home2() {
+    const homename = 'my house'
+    // homename = 'your house' //에러
+    console.log(homename);
+}
+// home2()
+
+//const & immutable array
+function home3() {
+    const list = ['apple', 'orange', 'watermelon']
+    // const array에 새로운 값 추가 가능!!
+    // const를 사용하더라도 배열과 오브젝트의 값을 변경하는 것은 가능하다
+    // "재할당"하는 것이 불가한것..!!
+    list.push('banana')
+
+
+}
+// home3()
+
+//immutable array를 어떻게 만들지 ?
+// 뒤로가기, 앞으로 가기 
+//concat을 사용하여 불변하게 지켜주기 
+
+// 불변의 array를 생성하는 것..
+//두 배열은 전혀 다름..
+const list1 =  ['apple', 'orange', 'watermelon']
+const list2 = [].concat(list1, "banana");
+// console.log(list1, list2)
+// console.log(list1 === list2);
+
+
+// 앞으로 즉시실행함수로 테스트하기..
+// 즉시실행함수 사용하기 위해서는 세미콜론 필수..!
+// es6의 specific rules for automatic semicolon insertion을 
+// 즉시실행함수일 경우 실행해주지않는다..!
+
+
+//ES2015 string에 새로운 메서드들
+(function () {
+    let str = "hello world ! ^^!~~"
+    let matchstr = "hello"
+
+    // 시작 string이 같은지 boolean으로 리턴
+    // console.log(str.startsWith(matchstr))
+    //끝 문자열이 같은지
+    // console.log(str.endsWith(matchstr))
+    // 이 문자열 포함?
+    // console.log(str.includes("world"));
+    
+    //원래는 다른 라이브러리에서 제공했던 기능인데
+    //es6부터는 표준 자바스크립트에서도 사용 가능
+})();
+
+(function() {
+    // for of - 순회하기
+    var data = [1,2,undefined, NaN, null, ""]
+    data.forEach(function(value){
+        // console.log("value is " + value);
+        
+    })
+
+    // for in => 오브젝트 순회를 위해 사용하는 기능
+    // index로 접근하기 때문에 index값 확인 가능
+    // for in의 문제점
+    // 오브젝트에서 자기 자신이 가지고 있는 객체 이외의
+    // prototype으로 상위에 추가된 객체도 나타냄
+    // 따라서 for in 은 array에서 사용하지 않는 것이 좋음
+    Array.prototype.getIndex = function(){}
+    for(let idx in data) {
+        // console.log(data[idx]);
+    }
+    
+    //for in으로 사용 
+    //순회할 수 있는 새로운 방법 !
+    for(let value of data) {
+        // console.log(value)
+    }
+
+    // 문자열 순회도 가능
+    //char 단위로 쪼개서 순회해줌
+    var str2 = "hello world!"
+    for(let value of str2) {
+        // console.log(value)
+    }
+})();
+
+
+//spread operator : 펼침 연산자 ( 배열의 복사)
+(function(){
+    let pre = ["apple", "orange", 100]
+    let newData = [...pre]
+    // console.log(pre);
+    // console.log(newData);
+    // console.log(pre === newData);   //false
+    //둘은 다른 객체임.
+    // 정확히 카피를 뜬것.
+    //서로 같은 참조가 아니라 완전히 복사를 하는 것
+    // concat (새로운 데이터 복사하여 반환)과 같은 개념
+
+    //[...pre] => pre를 펼쳐서 써준다고 생각하면 됨..
+    // let test = ...pre 불가... 객체들을 리스트 등에 펼쳐야하기 때문!
+
+
+    // spread operator 활용
+
+    // 배열을 다른 배열 사이에 넣을 때 아주 유용!
+    let pre2 = [100,200,"hello", null]
+    let newData2 = [0,1,2,3, ...pre, 4] 
+    // console.log(newData2);
+    
+    let pre3 = [1,2,3]
+    // 개벌 파라미터로 전달할 때 유용!
+    function sum(a,b,c) {
+        return a*b*c
+    }
+
+    // sum(pre[0],pre[1], pre[2])
+    // apply 첫 인자 : context
+    // console.log(sum.apply(null, pre3))
+
+    //spread 사용
+    // 배열 형태로 인자값을 던져줄 때 사용하면 됨
+    // console.log(sum(...pre3));
+    
+    //배열 복사, merge, 전달 등에서 유용하게 사용 가능!!
+
+
+
+})();
+
+
+//from 메서드로 진짜 배열 만들기
+(function(){
+    //ES2015 from method
+    function addMark() {
+        let newData = []
+
+        //파라미터 ===> arguments 객체
+        for(let i =  0; i < arguments.length; i++) {
+            newData.push(arguments[i] + "!")
+        }
+        // console.log(newData);
+    }
+    addMark(1,2,3,4,5)
+
+    function addMark2() {
+        // arguments는 배열이 아니기때문에 map 함수를 사용할 수 없음
+        // 가짜배열임~!
+        // 따라서 오류가 난다
+        // let newData = arguments.map(function(value) {
+        //     return value
+        // })
+
+
+        //진짜배열로 바꿔주기 === from 사용 
+        let newArray  =Array.from(arguments)
+        let newData = newArray.map(function(value) {
+            return value
+        })
+        console.log(newData);
+        
+    }
+
+    addMark2(1,2,3,4,5,6,7,8)
+
+})();
+</script>
+</html>
