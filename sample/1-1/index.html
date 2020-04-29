@@ -875,6 +875,8 @@ const list2 = [].concat(list1, "banana");
 // 프로토타입을 객체에 추가 ==> assign과 비슷. 하지만 copy해서 새로운 객체 만들수 잇는 기능 지원
 // 하지만 setPrototypeOf는 말그대로 프로토타입을 추가해주는 기능뿐
 (()=>{
+
+    // parent
     const healthObj = {
         showHealth : function() {
             console.log("운동시간" + this.HealthTime)
@@ -904,6 +906,36 @@ const list2 = [].concat(list1, "banana");
 
     // 같은 결과 : Object.prototype.__proto__
 
+
+
+    // setPrototypeOf으로 prototype chain 생성하기
+
+    //child obj
+    const healthChildObj = {
+        getAge: function() {
+            return this.age
+        }
+    }
+
+    //prototype chain
+    // 일종의 상속
+    Object.setPrototypeOf(healthChildObj, healthObj)
+    const childObj = Object.setPrototypeOf({
+        age: 22
+    }, healthChildObj)
+    console.log(childObj);
+
+    childObj.setHealth("11:55")
+    childObj.showHealth()
+
+
 })();
+
+// module export & import 
+(() => {
+    
+})();
+
+
 </script>
 </html>
