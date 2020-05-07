@@ -901,8 +901,8 @@ const list2 = [].concat(list1, "banana");
         lastTime:"11:20"
     }, healthObj)
 
-    console.log("myhealth is " , myHealth);
-    console.log("newObj is " , newObj);
+    // console.log("myhealth is " , myHealth);
+    // console.log("newObj is " , newObj);
 
     // 같은 결과 : Object.prototype.__proto__
 
@@ -923,19 +923,166 @@ const list2 = [].concat(list1, "banana");
     const childObj = Object.setPrototypeOf({
         age: 22
     }, healthChildObj)
-    console.log(childObj);
+    // console.log(childObj);
 
-    childObj.setHealth("11:55")
-    childObj.showHealth()
+    // childObj.setHealth("11:55")
+    // childObj.showHealth()
 
 
 })();
 
 // module export & import 
-(() => {
+// js를 module로 구현 
+// import log from './myLogger'
+// 확장자를 쓰지 않아도 웹팩이 적절한 이름의 파일 찾아서 import 해 줌
+// import해서 사용하는 module 파일은 꼭 export해서 빼내어줘야 함
+// export : 객체단위로 export됨
+// module 안에 하나의 함수가 아니라 몇가지의 함수가 있다면 ?
+// (() => {
+//     //  하나의 모듈 js파일이라고 생각했을 때
+//     // 
+
+//     // 외부에서 사용하지 않을 함수는 export하지 않음
+//     const getTime = () => {
+//         return Data.now();
+//     }
+
+//     // 외부에서 사용할 함수는 export
+//     export const getCurrentHour = () => {
+//         return (new Date).getHours();
+//     }
+
+//     // 자주 쓰이는 것 === default 붙임 (import할 때도 좀 다름)
+//     export default function log(data) {
+//         console.log(data);
+        
+//     }
+
+//     // class 
+//     export class myLogger {
+//         constructor(props) {
+//             this.lectures = ['java', 'iOS']
+//         }
+//         getLectures() {
+//             return this.lectures
+//         }
+
+//         getTime() {
+//             return Date.now()
+//         }
+//     }
+
+//     // utility
+//     // const는 export default랑 한번에 사용 불가 !
+//     // 쓰려면 const 선언문 따로, export default문 따로 ...
+//     export const _ = {
+//         log(data) {
+//             if(window.console) console.log(data);
+            
+//         }
+//     }
+
+
+//     // --------------------------------------------------------------
+//     // --------------------------------------------------------------
+//     // --------------------------------------------------------------
+//     // --------------------------------------------------------------
+//     // --------------------------------------------------------------
+//     // 외부에서 사용하는 예시 , default인 경우에는 {} 밖에 명시!!!!
+//     import log, { getCurrentHour, myLogger, _ } from './myLogger'
+//     log(`current hour is ${getCurrentHour()}`);
+
+//     const logger = new myLogger()
+//     log(`lectures of Codesquad are ${logger.getLectures()}`)
+
+//     // utility 사용
+//     _.log((`lectures of Codesquad are ${logger.getLectures()}`))
+
+// })();
+
+
+// proxy로 interception 기능 구현
+(()=>{
+    const myObj = {name:'crong'}
+
+    // Proxy API : 첫인자(target obj), 두번째 인자 : 핸들러값
+    const proxy = new Proxy(myObj, {})
+
+    console.log(proxy.name);
+
+    // 랩핑한거 아닐까 ? ==> 맞습니다.. 
+    // 하지만 proxy !== myObj
+    // 두 객체는 다른것..!
+
+
+    // 핸들러는 작업을 인터셉트해서 추가적인 작업 구현 가능
+    // 예를 들어 logging 작업을 proxy로 많이 진행... 
+    const proxy2 = new Proxy(myObj, {
+        get : function (target, property, receiver) {
+            console.log('get value');
+            
+            return target[property]
+        },
+
+        // proxy2의 value가 변경되면(set되면) 추가 작업이 진행됨
+        // 여기에 정의한대로 ... 
+        // 지금은 log찍는 내용을 정의했기 때문에 
+        // name 변경되었을 때 log 찍힘
+        set : function (target, property, value) {
+            console.log('set value')
+            target[property] = value
+        }
+    })
+    
+
+    console.log(proxy2.name);
+    // set value
+    proxy2.name = "codesquad"       
+
+    // get value 
+    proxy2.name
+    console.log(proxy2.name);
+    
+
+    // ex) logging (value 바뀔 때마다 changedValue++ )
+    const myObj3 = {name: 'crong', changedValue: 0}
+
+
+
+    // const proxy3 = new Proxy( {name: 'crong', changedValue: 0}, {
+    // 아래와 같은 코드. 객체로 바로 선언해서 사용도 가능~
+    const proxy3 = new Proxy(myObj3, {
+        get : function (target, property, receiver) {
+            console.log('get value');
+            
+            // 두개 같은 의미
+            // reflect : 어떤 오브젝트 안의 프로퍼티 뽑아낼 때 사용
+            // return Reflect.get(target, property)
+            return (property in target) ? target[property] : "anonymous"
+        },
+        set : function (target, property, value) {
+            target['changedValue']++
+            target[property] = value
+        }
+    })
+
+    proxy3.name = "sdfsdfsf";
+    console.log(myObj3);
+
+    myObj3.name = "startup campus"
+    myObj3.name = "startup campus"
+    myObj3.name = "startup campus"
+
+    console.log(myObj3);
+    // myObj3의 name을 변경하면value는 ++되지 않음!!
+    // Proxy 객체만 가능~
+
+
+    //없는 값 출력했을 때 ==> 결과값 분기처리
+    console.log(proxy3.sldfkj);
+    
     
 })();
-
 
 </script>
 </html>
